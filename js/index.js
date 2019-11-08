@@ -26,7 +26,6 @@ $(document).ready(function() {
     $(".board").css('visibility', "visible");
     computerSymbol = "O";
     playerSymbol = "X";
-
   });
 
   $(".o").click(function() { // computer goes first
@@ -37,7 +36,6 @@ $(document).ready(function() {
     computerSymbol = "X";
     playerSymbol = "O";
     computerTurn();
-
   });
 
   $(".resetPage").click(function() {
@@ -52,11 +50,9 @@ $(document).ready(function() {
     computerArr = [];
     used = [];
     i = 0;
-
   });
 
   function checkWin(arr) {
-
     for (j = 0; j < winArr.length; j++) {
       win = arr.filter(function(elem) {
         return winArr[j].indexOf(elem) > -1;
@@ -68,7 +64,13 @@ $(document).ready(function() {
     }
     console.log(arr);
     return false;
+  }
 
+  function markTile(symbol, index) {
+    $(".box" + index).text(symbol);
+    used.push(index);
+    computerArr.push(index);
+    $(".box" + index).addClass("not-active");
   }
 
   function computerTurn() {
@@ -81,18 +83,7 @@ $(document).ready(function() {
       return;
     }
 
-    for (i = 1; i < 10; i++) {
-
-      if (jQuery.inArray(i, used) == -1) {               
-        $(".box" + i).text(computerSymbol);
-        used.push(i);
-        computerArr.push(i);
-        $(".box" + i).addClass("not-active");
-
-        break;
-      }   
-
-    }
+    markTile(computerSymbol, randomSquare(used));
 
     if (checkWin(computerArr)) {
       $(".box").addClass("not-active");
@@ -106,9 +97,7 @@ $(document).ready(function() {
         direction: 'up'
       }, 1000);
       $("#victor").text("Draw!");
-
     }
-
   }
 
   $(".box1").click(function() { //1    
@@ -193,5 +182,38 @@ $(document).ready(function() {
 
     computerTurn();
   });
+
+  function emptySquares(board) {
+    let arr = [1,2,3,4,5,6,7,8,9];
+
+    const avail = arr.filter(num => board.indexOf(num) === -1);
+
+    return avail;
+  }
+
+  function randomSquare(board) {
+    const availSpots = emptySquares(board);
+    return availSpots[Math.floor(Math.random() * board.length)];
+  }
+
+  function minmax(board) {
+
+    const availSpots = emptySquares(board);
+
+    if (checkWin(playerArr))
+      return {score: -10};
+    else if (checkWin(computerArr))
+      return {score: 10};
+    else if (availSpots.length === 0) {
+      return {score: 0};
+    }
+
+    let moves = [];
+
+    for (let i = 0; i < availSpots.length; i++) {
+      let move = {};
+      move.index = board[availSpots[i]];
+    }
+  }
 
 });
